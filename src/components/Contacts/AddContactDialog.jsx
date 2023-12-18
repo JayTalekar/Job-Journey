@@ -12,13 +12,16 @@ import {
   Typography,
   MenuItem,
   InputLabel,
-  Chip
+  Chip,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { AuthContext } from '../../context/AuthContext';
 import { addContact } from '../../firebase/FirestoreFunctions'
 import { useDispatch, useSelector } from 'react-redux';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid, validate } from 'uuid';
 import {addContact as addContactRedux} from '../../actions'
+import {validateName, validateCompanyName, validateJobPositionTitle, validateEmail, validatePhoneNumber, validateURL, validateDescription} from '../../helpers'
 
 export const AddContactDialog = ({onCloseCallback}) =>{
 
@@ -41,9 +44,27 @@ export const AddContactDialog = ({onCloseCallback}) =>{
       setOpen(false);
       onCloseCallback()
     };
+
+    const [openSnackbar, setOpenSnackbar] = useState(false)
+    const [message, setMessage] = useState("")
+    const [severity, setSeverity] = useState("")
+
+    const onCloseSnackbar = () => setOpenSnackbar(false)
   
     const handleSubmit = async () => {
       try {
+        if(name.length == 0) throw new Error("Name is Required")
+        validateName(name)
+        if(company.length == 0) throw new Error("Company Name is Required")
+        validateCompanyName(company)
+        if(position.length == 0) throw new Error("Position is Required")
+        validateJobPositionTitle(position)
+        if(email.length == 0) throw new Error("Email is Required")
+        validateEmail(email)
+        if(phoneNumber) validatePhoneNumber(phoneNumber)
+        if(linkedIn) validateURL(linkedIn)
+        if(contactNotes) validateDescription(contactNotes)
+
         const contact = {
             id: uuid(),
             name: name,
@@ -66,7 +87,10 @@ export const AddContactDialog = ({onCloseCallback}) =>{
           // Handle contacts is not added to Cloud Storage
         }
       } catch (error) {
-        console.error("Error adding contact: ", error);
+        setOpenSnackbar(true)
+        setSeverity("error")
+        setMessage(error.message)
+        console.error("Error adding contact: ", error.message);
       }
     };
 
@@ -78,6 +102,7 @@ export const AddContactDialog = ({onCloseCallback}) =>{
             <Grid item xs={12}>
               <TextField
                 autoFocus
+                required
                 margin="dense"
                 name="name"
                 label="Name"
@@ -85,11 +110,12 @@ export const AddContactDialog = ({onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={name}
-                onChange={e => setName(e.target.value)}
+                onChange={e => setName(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 margin="dense"
                 name="company"
                 label="Company Name"
@@ -97,11 +123,12 @@ export const AddContactDialog = ({onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={company}
-                onChange={e => setCompany(e.target.value)}
+                onChange={e => setCompany(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 margin="dense"
                 name="position"
                 label="Position"
@@ -109,11 +136,12 @@ export const AddContactDialog = ({onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={position}
-                onChange={e => setPosition(e.target.value)}
+                onChange={e => setPosition(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 margin="dense"
                 name="email"
                 label="Email"
@@ -121,7 +149,7 @@ export const AddContactDialog = ({onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={6}>
@@ -133,7 +161,7 @@ export const AddContactDialog = ({onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={phoneNumber}
-                onChange={e => setPhoneNumber(e.target.value)}
+                onChange={e => setPhoneNumber(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={12}>
@@ -176,7 +204,7 @@ export const AddContactDialog = ({onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={linkedIn}
-                onChange={e => setLinkedIn(e.target.value)}
+                onChange={e => setLinkedIn(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={12}>
@@ -190,7 +218,7 @@ export const AddContactDialog = ({onCloseCallback}) =>{
                 rows={3}
                 variant="outlined"
                 value={contactNotes}
-                onChange={e => setContactNotes(e.target.value)}
+                onChange={e => setContactNotes(e.target.value.trim())}
               />
             </Grid>
           </Grid>
@@ -199,6 +227,12 @@ export const AddContactDialog = ({onCloseCallback}) =>{
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleSubmit} variant="contained" color="primary">Save</Button>
         </DialogActions>
+
+        <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={onCloseSnackbar}>
+          <Alert severity={severity} sx={{ width: '100%' }} onClose={onCloseSnackbar}>
+            {message}
+          </Alert>
+        </Snackbar>
       </Dialog>
     )
 }

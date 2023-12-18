@@ -141,3 +141,15 @@ export function validateDescription(description) {
 
     return true;
 }
+
+export function validatePhoneNumber(phoneNumber) {
+    // Regular expression pattern for phone number validation
+    const phoneNumberPattern = /^\d{10}$/;
+
+    // Check if the phone number matches the pattern
+    if (!phoneNumberPattern.test(phoneNumber)) {
+        throw new Error("Invalid phone number format. Please provide a valid phone number!");
+    }
+
+    return true;
+}

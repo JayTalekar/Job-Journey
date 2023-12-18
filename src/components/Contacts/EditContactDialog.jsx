@@ -12,12 +12,15 @@ import {
   Typography,
   MenuItem,
   InputLabel,
-  Chip
+  Chip,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { AuthContext } from '../../context/AuthContext';
 import { editContact, deleteContact } from '../../firebase/FirestoreFunctions'
 import { useDispatch, useSelector } from 'react-redux';
 import {editContact as editContactRedux, deleteContact as deleteContactRedux} from '../../actions'
+import {validateName, validateCompanyName, validateJobPositionTitle, validateEmail, validatePhoneNumber, validateURL, validateDescription} from '../../helpers'
 
 export const EditContactDialog = ({data, onCloseCallback}) =>{
 
@@ -45,8 +48,26 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
       onCloseCallback()
     };
   
+    const [openSnackbar, setOpenSnackbar] = useState(false)
+    const [message, setMessage] = useState("")
+    const [severity, setSeverity] = useState("")
+
+    const onCloseSnackbar = () => setOpenSnackbar(false)
+
     const handleSave = async () => {
       try {
+        if(name.length == 0) throw new Error("Name is Required")
+        validateName(name)
+        if(company.length == 0) throw new Error("Company Name is Required")
+        validateCompanyName(company)
+        if(position.length == 0) throw new Error("Position is Required")
+        validateJobPositionTitle(position)
+        if(email.length == 0) throw new Error("Email is Required")
+        validateEmail(email)
+        if(phoneNumber) validatePhoneNumber(phoneNumber)
+        if(linkedIn) validateURL(linkedIn)
+        if(contactNotes) validateDescription(contactNotes)
+
         const contact = {
             id: id,
             name: name,
@@ -69,6 +90,9 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
           // Handle contacts is not edited to Cloud Storage
         }
       } catch (error) {
+        setOpenSnackbar(true)
+        setSeverity("error")
+        setMessage(error.message)
         console.error("Error editing contact: ", error);
       }
     };
@@ -98,6 +122,7 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
             <Grid item xs={12}>
               <TextField
                 autoFocus
+                required
                 margin="dense"
                 name="name"
                 label="Name"
@@ -105,11 +130,12 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={name}
-                onChange={e => setName(e.target.value)}
+                onChange={e => setName(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 margin="dense"
                 name="company"
                 label="Company Name"
@@ -117,11 +143,12 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={company}
-                onChange={e => setCompany(e.target.value)}
+                onChange={e => setCompany(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 margin="dense"
                 name="position"
                 label="Position"
@@ -129,11 +156,12 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={position}
-                onChange={e => setPosition(e.target.value)}
+                onChange={e => setPosition(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 margin="dense"
                 name="email"
                 label="Email"
@@ -141,7 +169,7 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={6}>
@@ -153,7 +181,7 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={phoneNumber}
-                onChange={e => setPhoneNumber(e.target.value)}
+                onChange={e => setPhoneNumber(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={12}>
@@ -196,7 +224,7 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={linkedIn}
-                onChange={e => setLinkedIn(e.target.value)}
+                onChange={e => setLinkedIn(e.target.value.trim())}
               />
             </Grid>
             <Grid item xs={12}>
@@ -210,7 +238,7 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 rows={3}
                 variant="outlined"
                 value={contactNotes}
-                onChange={e => setContactNotes(e.target.value)}
+                onChange={e => setContactNotes(e.target.value.trim())}
               />
             </Grid>
           </Grid>
@@ -219,6 +247,12 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
           <Button onClick={handleDelete} variant='contained' color='error'>Delete</Button>
           <Button onClick={handleSave} variant="contained" color="primary">Save</Button>
         </DialogActions>
+
+        <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={onCloseSnackbar}>
+          <Alert severity={severity} sx={{ width: '100%' }} onClose={onCloseSnackbar}>
+            {message}
+          </Alert>
+        </Snackbar>
       </Dialog>
     )
 }
