@@ -5,31 +5,15 @@ import {
     Grid,
 } from "@mui/material"
 import { ContactCard } from "./ContactCard";
+import { useSelector } from "react-redux";
 
 export const ContactsGrid = () => {
-    const sampleData = [{
-        id: 0,
-        name: "Jay Talekar",
-        position: "Software Developer",
-        company: "Google",
-    },
-    {
-        id: 1,
-        name: "Deep Talekar",
-        position: "Front-end Developer",
-        company: "Meta"
-    },
-    {
-        id: 2,
-        name: "Shail Patel",
-        position: "Software Engineer",
-        company: "Uber"
-    }
-]
+
+    const contactsData = useSelector(state => state.contacts)
 
     return(
         <Grid container spacing={1} my={'10px'}>
-            {sampleData.map(data => (
+            {contactsData.map(data => (
                 <Grid item xs={2}>
                     <ContactCard contactData={data}/>
                 </Grid>

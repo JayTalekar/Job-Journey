@@ -4,6 +4,7 @@ import { db } from "../main";
 
 const dashboard_coll = "dashboards"
 const user_coll  = "users"
+const contact_coll = "contacts"
 
 export async function setupDashboard(uid){
     try{
@@ -132,6 +133,65 @@ export async function updateCategoryPosition(uid, array, index1, index2) {
         return true;
     } catch (e) {
         console.error("Error updating category positions: ", e);
+        return false;
+    }
+}
+
+export async function addContact(uid, contactData){
+    try{
+        const contactRef = doc(db, contact_coll, uid)
+        await setDoc(contactRef,{
+            contacts: arrayUnion(contactData)
+        })
+
+        console.log("Contact Data added successfully.")
+        return true
+    }catch(e){
+        console.error("Error adding contact: ", e);
+        return false;
+    }
+}
+
+export async function editContact(uid, contactData){
+    try{
+        const contactRef = doc(db, contact_coll, uid)
+        const contactSS = await getDoc(contactRef)
+
+        const contacts = contactSS.data().contacts
+        const index = contacts.findIndex(c => c.id == contactData.id)
+
+        contacts.splice(index, 1, contactData)
+
+        await setDoc(contactRef,{
+            contacts: contacts
+        })
+
+        console.log("Contact Data edited successfully.")
+        return true
+    }catch(e){
+        console.error("Error editing contact: ", e);
+        return false;
+    }
+}
+
+export async function deleteContact(uid, id){
+    try{
+        const contactRef = doc(db, contact_coll, uid)
+        const contactSS = await getDoc(contactRef)
+
+        const contacts = contactSS.data().contacts
+        const index = contacts.findIndex(c => c.id == id)
+
+        contacts.splice(index, 1)
+
+        await setDoc(contactRef,{
+            contacts: contacts
+        })
+
+        console.log("Contact Data deleted successfully.")
+        return true
+    }catch(e){
+        console.error("Error deleting contact: ", e);
         return false;
     }
 }

@@ -58,4 +58,19 @@ const persistCategories = (categories) => ({
     payload: {categories: categories}
 })
 
-export {addJob, doneAddJob, editJob, deleteJob, doneEditJob, setBoardName, persistJobs, persistCategories}
+const addContact = (contactData) => ({
+    type: actions.add_contact,
+    payload: {contactData: contactData}
+})
+
+const editContact = (contactData) => ({
+    type: actions.edit_contact,
+    payload: {contactData: contactData}
+})
+
+const deleteContact = (id) => ({
+    type: actions.delete_contact,
+    payload: {id: id}
+})
+
+export {addJob, doneAddJob, editJob, deleteJob, doneEditJob, setBoardName, persistJobs, persistCategories, addContact, editContact, deleteContact}

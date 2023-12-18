@@ -12,7 +12,10 @@ const actions = {
     edit_job: 'EDIT_JOB',
     delete_job: 'DELETE_JOB',
     done_edit_job: 'DONE_EDIT_JOB',
-    set_board_name: 'SET_BOARD_NAME'
+    set_board_name: 'SET_BOARD_NAME',
+    add_contact: 'ADD_CONTACT',
+    edit_contact: 'EDIT_CONTACT',
+    delete_contact: 'DELETE_CONTACT'
 }
 
 const categories = [
