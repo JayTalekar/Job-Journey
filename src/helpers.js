@@ -153,3 +153,16 @@ export function validatePhoneNumber(phoneNumber) {
 
     return true;
 }
+
+export function validateFileName(filename) {
+    // Regular expression pattern for filename validation
+    const filenamePattern = /^[a-zA-Z0-9\s_@\-()[\]{}!#$%^&+=.,;']{1,}$/;
+
+    // Check if the filename matches the pattern
+    if (!filenamePattern.test(filename)) {
+        throw new Error("Invalid filename format. Please provide a valid filename!");
+    }
+
+    return true;
+}
+

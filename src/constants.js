@@ -1,7 +1,8 @@
 export{
     actions,
     categories,
-    job_type
+    job_type,
+    doc_type
 }
 
 const actions = {
@@ -15,7 +16,11 @@ const actions = {
     set_board_name: 'SET_BOARD_NAME',
     add_contact: 'ADD_CONTACT',
     edit_contact: 'EDIT_CONTACT',
-    delete_contact: 'DELETE_CONTACT'
+    delete_contact: 'DELETE_CONTACT',
+    add_document: "ADD_DOC",
+    edit_document: "EDIT_DOC",
+    delete_document: "DELETE_DOC",
+    set_documents: "SET_DOCS"
 }
 
 const categories = [
@@ -31,4 +36,10 @@ const job_type = [
     "Remote",
     "Hybrid",
     "Onsite"
+]
+
+const doc_type = [
+    "Resume",
+    "Cover Letter",
+    "Transcript"
 ]

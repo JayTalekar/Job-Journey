@@ -73,4 +73,23 @@ const deleteContact = (id) => ({
     payload: {id: id}
 })
 
-export {addJob, doneAddJob, editJob, deleteJob, doneEditJob, setBoardName, persistJobs, persistCategories, addContact, editContact, deleteContact}
+const addDoc = (docData) => ({
+    type: actions.add_document,
+    payload: {docData: docData}
+})
+
+const editDoc = (docData) => ({
+    type: actions.edit_document,
+    payload: {docData: docData}
+})
+
+const deleteDoc = (id) => ({
+    type: actions.delete_document,
+    payload: {id: id}
+})
+
+const setDocs = (allMetadata) => ({
+    type: actions.set_documents,
+    payload: {allMetadata: allMetadata}
+})
+export {addJob, doneAddJob, editJob, deleteJob, doneEditJob, setBoardName, persistJobs, persistCategories, addContact, editContact, deleteContact, addDoc, editDoc, deleteDoc, setDocs}
