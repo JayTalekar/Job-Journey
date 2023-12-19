@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useDispatch } from "react-redux";
 import { editJob, deleteJob } from "../../actions";
 import { categories, job_type } from "../../constants";
@@ -14,15 +14,23 @@ import {
     Button,
     Typography,
     MenuItem,
+    Snackbar,
+    Alert
 } from "@mui/material";
-
+import { updateJob, deleteJob as removeJob } from "../../firebase/FirestoreFunctions";
+import { AuthContext } from "../../context/AuthContext";
+import { validateCompanyName, validateJobPositionTitle, validateSalary, validateLocationName, validateURL, validateDescription } from '../../helpers'
 
 const EditJobDialog = ({jobData, onCloseCallback}) => {
+    const {currentUser} = useContext(AuthContext)
+
     const dispatch = useDispatch();
+    
     const id = jobData.id
     const [company, setCompany] = useState(jobData.company? jobData.company : "");
     const [position, setPosition] = useState(jobData.category? jobData.position : "");
     const [salary, setSalary] = useState(jobData.salary? jobData.salary : "");
+    const prevCategory = jobData.category
     const [category, setCategory] = useState(jobData.category? jobData.category : categories[0]);
     const [jobType, setJobType] = useState(jobData.jobType? jobData.jobType : job_type[0])
     const [location, setLocation] = useState(jobData.location? jobData.location : "")
@@ -30,33 +38,73 @@ const EditJobDialog = ({jobData, onCloseCallback}) => {
     const [desc, setDesc] = useState(jobData.desc? jobData.desc: "")
     const [open, setOpen] = useState(true);
 
+    const [openSnackbar, setOpenSnackbar] = useState(false)
+    const [message, setMessage] = useState("")
+    const [severity, setSeverity] = useState("")
+
+    const onCloseSnackbar = () => setOpenSnackbar(false)
+
     const handleClose = () => {
         setOpen(false);
         console.log(jobData)
         onCloseCallback()
     };
 
-    const handleSave = () => {
-        jobData.company = company
-        jobData.position = position
-        jobData.salary = salary
-        jobData.category = category
-        jobData.jobType = jobType
-        jobData.location = location
-        jobData.url = url
-        jobData.desc = desc
+    const handleSave = async () => {
+        try{
+            if(company.length == 0) throw new Error("Company Name is Required")
+            validateCompanyName(company)
+            if(position.length == 0) throw new Error("Position is Required")
+            validateJobPositionTitle(position)
+            if(salary) validateSalary(parseInt(salary))
+            if(location) validateLocationName(location)
+            if(url) validateURL(url)
+            if(desc) validateDescription(desc)
 
-        dispatch(
-            editJob(jobData)
-        );
-        handleClose();
+            jobData.company = company
+            jobData.position = position
+            jobData.salary = salary
+            jobData.category = category
+            jobData.jobType = jobType
+            jobData.location = location
+            jobData.url = url
+            jobData.desc = desc
+    
+            if(jobData.category != prevCategory){
+                jobData.updates = [...jobData.updates, {
+                    category: jobData.category,
+                    timeStamp: new Date().getTime()
+                }]
+            }
+
+            dispatch(
+                editJob(jobData)
+            );
+            await updateJob(currentUser.uid, jobData)
+            handleClose();
+    
+        }catch(error){
+            setOpenSnackbar(true)
+            setSeverity("error")
+            setMessage(error.message)
+            console.error("Error Updating Job: ", error);
+        }
     };
 
-    const handleDelete = () => {
-        dispatch(
-            deleteJob(id)
-        )
-        handleClose()
+    const handleDelete = async () => {
+        try{
+            await removeJob(currentUser.uid, jobData.id)
+
+            dispatch(
+                deleteJob(id)
+            )
+            handleClose()
+        }catch(error){
+            setOpenSnackbar(true)
+            setSeverity("error")
+            setMessage(error.message)
+            console.error("Error Deleting Job: ", error);
+        }
     }
 
     return (
@@ -106,7 +154,7 @@ const EditJobDialog = ({jobData, onCloseCallback}) => {
                                 size="sm"
                                 placeholder="Salary"
                                 value={salary}
-                                onChange={(e) => setSalary(e.target.value)}/>
+                                onChange={(e) => setSalary(e.target.value.trim())}/>
                         </Box>
                         
                         <Box>
@@ -141,7 +189,7 @@ const EditJobDialog = ({jobData, onCloseCallback}) => {
                                 InputLabelProps={{shrink: false}}
                                 placeholder="URL"
                                 value={url}
-                                onChange={(e) => setURL(e.target.value)}/>
+                                onChange={(e) => setURL(e.target.value.trim())}/>
                         </Box>
                     </Box>
 
@@ -167,6 +215,12 @@ const EditJobDialog = ({jobData, onCloseCallback}) => {
                     Save & Close
                 </Button>
             </DialogActions>
+
+            <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={onCloseSnackbar}>
+            <Alert severity={severity} sx={{ width: '100%' }} onClose={onCloseSnackbar}>
+                {message}
+            </Alert>
+            </Snackbar>
         </Dialog>
     );
 };

@@ -59,54 +59,51 @@ export async function addAllJobs(uid, jobs){
 
 
 export async function addJob(uid, jobData){
-    try{
-        const dashboardRef = doc(db, dashboard_coll, uid)
-        await updateDoc(dashboardRef, {
-            "jobs": arrayUnion(jobData)
-        })
+    const dashboardRef = doc(db, dashboard_coll, uid)
+    await updateDoc(dashboardRef, {
+        "jobs": arrayUnion(jobData)
+    })
 
-        console.log("Job added with ID: ", jobData.id);
-        return true
-    }catch(e){
-        console.error("Error adding Job Data: ", e);
-        return false
-    }
+    console.log("Job added with ID: ", jobData.id);
 }
 
 export async function updateJob(uid, jobData){
-    try{
-        const dashboardRef = doc(db, dashboard_coll, uid)
-        const dashboardSS = await getDoc(dashboardRef)
+    const dashboardRef = doc(db, dashboard_coll, uid)
+    const dashboardSS = await getDoc(dashboardRef)
 
-        const jobs = dashboardSS.data().jobs
+    const jobs = dashboardSS.data().jobs
 
-        const jobIndex = jobs.findIndex(job => job.id === jobData.id)
+    const jobIndex = jobs.findIndex(job => job.id === jobData.id)
 
-        if(jobIndex == -1) throw "No Job to update with id: " + jobData.id
+    if(jobIndex == -1) throw new Error("No Job to update with id: " + jobData.id)
 
-        if(jobData.delete){
-            jobs.splice(jobIndex, 1)
-        }else {
-            if(jobs[jobIndex].category != jobData.category){
-                jobData.updates = [...jobData.updates, {
-                    category: jobData.category,
-                    timeStamp: new Date().getTime()
-                }]
-            }
+    jobs.splice(jobIndex, 1, jobData)
 
-            jobs.splice(jobIndex, 1, jobData)
-        }
+    await updateDoc(dashboardRef, {
+        "jobs": jobs
+    })
+    
+    console.log("Job updated with ID: ", jobData.id);
 
-        await updateDoc(dashboardRef, {
-            "jobs": jobs
-        })
-        
-        console.log("Job updated with ID: ", jobData.id);
-        return true
-    }catch(e){
-        console.error("Error updating Job Data: ", e);
-        return false
-    }
+}
+
+export async function deleteJob(uid, jobId){
+    const dashboardRef = doc(db, dashboard_coll, uid)
+    const dashboardSS = await getDoc(dashboardRef)
+
+    const jobs = dashboardSS.data().jobs
+
+    const jobIndex = jobs.findIndex(job => job.id === jobId)
+
+    if(jobIndex == -1) throw new Error("No Job found with ID: " + jobId)
+
+    jobs.splice(jobIndex, 1)
+
+    await updateDoc(dashboardRef, {
+        "jobs": jobs
+    })
+    
+    console.log("Job Deleted with ID: ", jobId);
 }
 
 export async function getDashboardData(uid){

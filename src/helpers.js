@@ -85,7 +85,8 @@ export function validateJobPositionTitle(title) {
 }
 
 export function validateSalary(salary) {
-    if (typeof salary !== 'number') {
+    salary = Number.parseInt(salary)
+    if (Number.isNaN(salary)) {
         throw new Error("Salary must be a number!");
     }
 
@@ -105,7 +106,7 @@ export function validateLocationName(locationName) {
     }
 
     // Regular expression pattern for location name validation
-    const locationNamePattern = /^[a-zA-Z0-9\s]+$/;
+    const locationNamePattern = /^[a-zA-Z\s]+$/;
 
     // Check if the location name matches the pattern
     if (!locationNamePattern.test(locationName)) {
@@ -117,7 +118,7 @@ export function validateLocationName(locationName) {
 
 export function validateURL(url) {
     // Regular expression pattern for URL validation
-    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+    const urlPattern = /\b(?:https?|http|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]/i;
 
     // Check if the URL matches the pattern
     if (!urlPattern.test(url)) {

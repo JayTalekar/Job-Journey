@@ -1,31 +1,8 @@
 import { actions } from "./constants";
 
-const addJob = (
-    position, 
-    company,
-    salary,
-    category,
-    jobType,
-    location,
-    url,
-    desc
-    ) => ({
+const addJob = (jobData) => ({
     type: actions.add_job,
-    payload: {
-        position: position,
-        company: company,
-        salary: salary,
-        category: category,
-        jobType: jobType,
-        location: location,
-        url: url,
-        desc: desc
-    }
-})
-
-const doneAddJob = () => ({
-    type: actions.done_add_job,
-    payload: {}
+    payload: {jobData: jobData}
 })
 
 const editJob = (jobData) => ({
@@ -36,11 +13,6 @@ const editJob = (jobData) => ({
 const deleteJob = (id) => ({
     type: actions.delete_job,
     payload: {id: id}
-})
-
-const doneEditJob = () => ({
-    type: actions.done_edit_job,
-    payload: {}
 })
 
 const setBoardName = (newBoardName) => ({
@@ -97,4 +69,4 @@ const setDocs = (allMetadata) => ({
     type: actions.set_documents,
     payload: {allMetadata: allMetadata}
 })
-export {addJob, doneAddJob, editJob, deleteJob, doneEditJob, setBoardName, persistJobs, persistCategories, addContact, editContact, deleteContact, setContacts, addDoc, editDoc, deleteDoc, setDocs}
+export {addJob, editJob, deleteJob, setBoardName, persistJobs, persistCategories, addContact, editContact, deleteContact, setContacts, addDoc, editDoc, deleteDoc, setDocs}
