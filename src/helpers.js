@@ -1,4 +1,5 @@
 export function validateName(name) {
+    name = name.trim()
     if(name.length < 3) throw new Error("Name must be atleast 3 characters long!")
     if(name.length > 25) throw new Error("Name can be atmost 25 characters long!")
     // Regular expression pattern for name validation

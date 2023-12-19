@@ -17,6 +17,7 @@ const actions = {
     add_contact: 'ADD_CONTACT',
     edit_contact: 'EDIT_CONTACT',
     delete_contact: 'DELETE_CONTACT',
+    set_contacts: 'SET_CONTACTS',
     add_document: "ADD_DOC",
     edit_document: "EDIT_DOC",
     delete_document: "DELETE_DOC",

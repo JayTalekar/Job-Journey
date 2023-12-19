@@ -137,6 +137,18 @@ export async function updateCategoryPosition(uid, array, index1, index2) {
     }
 }
 
+export async function getContacts(uid){
+    try{
+        const contactsRef = doc(db, contact_coll, uid)
+        const contactsSS = await getDoc(contactsRef)
+
+        return contactsSS.data().contacts
+    }catch(e){
+        console.error("Error fetching contacts: ", e);
+        return false;
+    }
+}
+
 export async function addContact(uid, contactData){
     try{
         const contactRef = doc(db, contact_coll, uid)

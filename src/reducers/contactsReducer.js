@@ -20,6 +20,9 @@ export const contactsReducer = (state = initialState, action) => {
             state.splice(deleteIndex, 1)
             return [...state]
 
+        case actions.set_contacts:
+            return [...payload.contactsData]
+
         default: return state
     }
 

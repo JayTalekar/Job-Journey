@@ -70,9 +70,9 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
 
         const contact = {
             id: id,
-            name: name,
-            company: company,
-            position: position,
+            name: name.trim(),
+            company: company.trim(),
+            position: position.trim(),
             email: email,
             phoneNumber: phoneNumber,
             linkedIn: linkedIn,
@@ -130,7 +130,7 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={name}
-                onChange={e => setName(e.target.value.trim())}
+                onChange={e => setName(e.target.value)}
               />
             </Grid>
             <Grid item xs={6}>
@@ -143,7 +143,7 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={company}
-                onChange={e => setCompany(e.target.value.trim())}
+                onChange={e => setCompany(e.target.value)}
               />
             </Grid>
             <Grid item xs={6}>
@@ -156,7 +156,7 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 fullWidth
                 variant="outlined"
                 value={position}
-                onChange={e => setPosition(e.target.value.trim())}
+                onChange={e => setPosition(e.target.value)}
               />
             </Grid>
             <Grid item xs={6}>
@@ -238,7 +238,7 @@ export const EditContactDialog = ({data, onCloseCallback}) =>{
                 rows={3}
                 variant="outlined"
                 value={contactNotes}
-                onChange={e => setContactNotes(e.target.value.trim())}
+                onChange={e => setContactNotes(e.target.value)}
               />
             </Grid>
           </Grid>
