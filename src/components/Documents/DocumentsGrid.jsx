@@ -10,7 +10,7 @@ import { getDocumentsData } from "../../firebase/StorageFunctions";
 import { AuthContext } from "../../context/AuthContext";
 import { setDocs } from '../../actions'
 
-export const DocumentsGrid = () => {
+export const DocumentsGrid = ({jobId}) => {
 
     let docsData = useSelector(state => state.documents)
     const dispatch = useDispatch()
@@ -29,9 +29,21 @@ export const DocumentsGrid = () => {
         getDocData()
     }, [])
 
+    const [jobDocs, setJobDocs] = useState([])
+    useEffect(() => {
+        const data = docsData.filter(d => JSON.parse(d.linked_jobs).includes(jobId))
+        setJobDocs(data)
+    }, [jobId, docsData])
+
     return(
         <Grid container spacing={1} my={'10px'}>
-            {docsData.map(data => (
+            {!jobId && docsData.map(data => (
+                <Grid key={data.id} item xs={2}>
+                    <DocumentCard docData={data}/>
+                </Grid>
+            ))}
+
+            {jobId && jobDocs.map(data => (
                 <Grid key={data.id} item xs={2}>
                     <DocumentCard docData={data}/>
                 </Grid>

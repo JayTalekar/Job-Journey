@@ -14,6 +14,7 @@ import {
     Divider,
     Container
 } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add';
 
 //Component imports
 import CategoryContainer from "./CategoryContainer";
@@ -212,7 +213,7 @@ export const KanbanDashboard = () => {
         <Box>
 
             <Box display="flex" justifyContent="space-between" sx={{marginBottom: "10px"}}>
-                <Button variant="contained" color="primary" size="small" onClick={handleAddJobClick}>
+                <Button startIcon={<AddIcon/>} variant="contained" color="primary" size="small" onClick={handleAddJobClick}>
                     Add Job
                 </Button>
                 

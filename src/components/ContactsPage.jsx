@@ -7,8 +7,9 @@ import {
 } from '@mui/material'; 
 import { ContactsGrid } from './Contacts/ContactsGrid';
 import { AddContactDialog } from './Contacts/AddContactDialog';
+import AddIcon from '@mui/icons-material/Add';
 
-export const ContactsPage = () => {
+export const ContactsPage = ({jobId}) => {
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -26,16 +27,16 @@ export const ContactsPage = () => {
           Your Contacts
         </Typography>
 
-        <Button variant="contained" color="secondary" size="small" onClick={handleAddContact}>
+        <Button startIcon={<AddIcon/>} variant="contained" color="secondary" size="small" onClick={handleAddContact}>
           Add contacts
         </Button>
       </Box>
 
       <Divider/>
 
-      <ContactsGrid/>
+      <ContactsGrid jobId={jobId}/>
 
-      {openDialog && <AddContactDialog onCloseCallback={onDialogClosed}/>}
+      {openDialog && <AddContactDialog jobId={jobId} onCloseCallback={onDialogClosed}/>}
     </Box>
   );
 };

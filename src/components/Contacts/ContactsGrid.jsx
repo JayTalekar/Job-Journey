@@ -1,4 +1,4 @@
-import React, {useEffect, useContext} from "react";
+import React, {useEffect, useContext, useState} from "react";
 import {
     Box,
     Typography,
@@ -10,7 +10,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { getContacts } from "../../firebase/FirestoreFunctions";
 import { setContacts } from "../../actions";
 
-export const ContactsGrid = () => {
+export const ContactsGrid = ({jobId}) => {
 
     const contactsData = useSelector(state => state.contacts)
     const dispatch = useDispatch()
@@ -30,9 +30,21 @@ export const ContactsGrid = () => {
         getContactsData()
     }, [])
 
+    const [jobContacts, setJobContacts] = useState([])
+    useEffect(() => {
+        const data = contactsData.filter(cd => cd.linked_jobs.includes(jobId))
+        setJobContacts(data)
+    }, [jobId, contactsData])
+
     return(
         <Grid container spacing={1} my={'10px'}>
-            {contactsData.map(data => (
+            {!jobId && contactsData.map(data => (
+                <Grid item xs={2}>
+                    <ContactCard contactData={data}/>
+                </Grid>
+            ))}
+
+            {jobId && jobContacts.map(data => (
                 <Grid item xs={2}>
                     <ContactCard contactData={data}/>
                 </Grid>

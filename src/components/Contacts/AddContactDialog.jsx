@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -23,7 +23,7 @@ import { v4 as uuid, validate } from 'uuid';
 import {addContact as addContactRedux} from '../../actions'
 import {validateName, validateCompanyName, validateJobPositionTitle, validateEmail, validatePhoneNumber, validateURL, validateDescription} from '../../helpers'
 
-export const AddContactDialog = ({onCloseCallback}) =>{
+export const AddContactDialog = ({jobId, onCloseCallback}) =>{
 
     const {currentUser} = useContext(AuthContext)
     const dispatch = useDispatch()
@@ -40,6 +40,16 @@ export const AddContactDialog = ({onCloseCallback}) =>{
     const [contactNotes, setContactNotes] = useState("")
     const [selectedJobs, setSelectedJobs] = useState([])
   
+    useEffect(() => {
+      if(jobId){
+        const selectedJob = jobs.find(j => j.id == jobId)
+
+        if(selectedJob){
+          setSelectedJobs([selectedJob])
+        }
+      }
+    }, [jobId])
+
     const handleClose = () => {
       setOpen(false);
       onCloseCallback()

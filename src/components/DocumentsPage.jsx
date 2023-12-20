@@ -7,9 +7,9 @@ import {
 } from '@mui/material'; 
 import { DocumentsGrid } from './Documents/DocumentsGrid';
 import { AddDocumentDialog } from './Documents/AddDocumentDialog'
+import AddIcon from '@mui/icons-material/Add';
 
-
-export const DocumentsPage = () => {
+export const DocumentsPage = ({jobId}) => {
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -27,16 +27,16 @@ export const DocumentsPage = () => {
           Your Documents
         </Typography>
 
-        <Button variant="contained" color="secondary" size="small" onClick={handleAddDocument}>
+        <Button startIcon={<AddIcon/>} variant="contained" color="secondary" size="small" onClick={handleAddDocument}>
           Add Documents
         </Button>
       </Box>
 
       <Divider/>
 
-      <DocumentsGrid/>
+      <DocumentsGrid jobId={jobId}/>
 
-      {openDialog && <AddDocumentDialog onCloseCallback={onDialogClosed}/>}
+      {openDialog && <AddDocumentDialog jobId={jobId} onCloseCallback={onDialogClosed}/>}
     </Box>
   );
 };

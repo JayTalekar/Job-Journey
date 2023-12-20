@@ -13,11 +13,14 @@ import {
     Select,
     Button,
     Typography,
+    Chip,
     MenuItem,
     Snackbar,
     Alert,
     Grid,
-    InputAdornment
+    InputAdornment,
+    Tabs,
+    Tab
 } from "@mui/material";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -26,7 +29,9 @@ import BusinessIcon from '@mui/icons-material/Business';
 import AddLinkIcon from '@mui/icons-material/AddLink';
 import { updateJob, deleteJob as removeJob } from "../../firebase/FirestoreFunctions";
 import { AuthContext } from "../../context/AuthContext";
-import { validateCompanyName, validateJobPositionTitle, validateSalary, validateLocationName, validateURL, validateDescription } from '../../helpers'
+import { validateCompanyName, validateJobPositionTitle, validateSalary, validateLocationName, validateURL, validateDescription, getRelativeTime } from '../../helpers'
+import { ContactsPage } from "../ContactsPage";
+import { DocumentsPage } from "../DocumentsPage";
 
 const EditJobDialog = ({jobData, onCloseCallback}) => {
     const {currentUser} = useContext(AuthContext)
@@ -114,12 +119,30 @@ const EditJobDialog = ({jobData, onCloseCallback}) => {
         }
     }
 
+    const updates = jobData.updates
+    const created_on = jobData.created_on
+    const created_category = jobData.created_category
+
+    const [currentTab, setCurrentTab] = useState(0)
+    function setTab(event, value){
+        setCurrentTab(value)
+    }
+
     return (
-        <Dialog maxWidth="md" fullWidth={true} open={open} onClose={handleClose}>
+        <Dialog fullScreen sx={{marginY: '10vh', marginX: '5vh'}} open={open} onClose={handleClose}>
             <DialogTitle>Edit Job</DialogTitle>
             <DialogContent sx={{display: 'flex', flexDirection: 'row'}}>
-                <Grid container spacing={2} marginTop={'5px'}>
+            <Container>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', marginBottom: '10px' }}>
+                    <Tabs value={currentTab} onChange={setTab} aria-label="basic tabs example">
+                        <Tab label="Jobs" />
+                        <Tab label="Contacts"/>
+                        <Tab label="Docs"/>
+                    </Tabs>
+                </Box>
 
+                { currentTab == 0 &&
+                <Grid container spacing={2} marginTop={'5px'} display={'flex'} flexDirection={'row'}>
                         <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'center'}>
                             <TextField
                                 InputProps={{
@@ -167,11 +190,11 @@ const EditJobDialog = ({jobData, onCloseCallback}) => {
                             <TextField
                                 InputProps={{
                                     startAdornment: (
-                                      <InputAdornment position="start">
+                                        <InputAdornment position="start">
                                         <AttachMoneyIcon />
-                                      </InputAdornment>
+                                        </InputAdornment>
                                     ),
-                                  }}
+                                    }}
                                 size="sm"
                                 placeholder="Salary"
                                 label="Salary"
@@ -194,11 +217,11 @@ const EditJobDialog = ({jobData, onCloseCallback}) => {
                             <TextField
                                 InputProps={{
                                     startAdornment: (
-                                      <InputAdornment position="start">
+                                        <InputAdornment position="start">
                                         <PlaceIcon />
-                                      </InputAdornment>
+                                        </InputAdornment>
                                     ),
-                                  }}
+                                    }}
                                 size="sm"
                                 placeholder="Location"
                                 label="Location"
@@ -238,9 +261,40 @@ const EditJobDialog = ({jobData, onCloseCallback}) => {
                                 onChange={(e) => setDesc(e.target.value)}/>
                         </Grid>
                 </Grid>
+                }
+                { currentTab == 1 &&
+                <Box>
+                    <ContactsPage jobId={id}/>
+                </Box>
+                }
+
+                { currentTab == 2 &&
+                <Box>
+                    <DocumentsPage jobId={id}/>
+                </Box>
+                }
+            </Container>
+
+                <Box width={'25%'} px={'15px'}>
+                <Typography variant="h5">Timeline</Typography>
+                    <Box  overflow={'scroll'}>
+                        <Box display={'flex'} flexDirection={'column'} my={'5px'}>
+                            <Typography variant="body2">Added to <Typography variant="subtitle3" fontWeight={'bold'}>{created_category}</Typography></Typography>
+                            <Chip size="small" label={getRelativeTime(created_on)} />
+                        </Box>
+                        {updates.length != 0 &&
+                            updates.map(update => (
+                                <Box display={'flex'} flexDirection={'column'} my={'5px'}>
+                                    <Typography variant="body2">Moved to <Typography variant="subtitle3" fontWeight={'bold'}>{update.category}</Typography></Typography>
+                                    <Chip size="small" label={getRelativeTime(update.timeStamp)}  />
+                                </Box>
+                            ))
+                        }
+                    </Box>
+                </Box>
 
             </DialogContent>
-            <DialogActions sx={{display:'flex', justifyContent: 'flex-end'}}>
+            <DialogActions sx={{display:'flex', justifyContent: 'flex-end', width: '79%'}}>
                 <Button onClick={handleDelete} variant='contained' color='error'>Delete</Button>
                 <Button onClick={handleSave} variant="contained" color="primary">
                     Save & Close

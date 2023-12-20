@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -26,7 +26,7 @@ import { doc_type } from '../../constants';
 import { addDoc } from '../../actions'
 import {validateFileName, validateDescription} from '../../helpers'
 
-export const AddDocumentDialog = ({onCloseCallback}) =>{
+export const AddDocumentDialog = ({jobId, onCloseCallback}) =>{
 
     const {currentUser} = useContext(AuthContext)
     const dispatch = useDispatch()
@@ -44,6 +44,16 @@ export const AddDocumentDialog = ({onCloseCallback}) =>{
     async function handleFileUpload(event){
       setFile(await event.target.files[0])
     }
+
+    useEffect(() => {
+      if(jobId){
+        const selectedJob = jobs.find(j => j.id == jobId)
+
+        if(selectedJob){
+          setSelectedJobs([selectedJob])
+        }
+      }
+    }, [jobId])
 
     const handleClose = () => {
       setOpen(false);
