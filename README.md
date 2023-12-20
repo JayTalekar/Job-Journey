@@ -1,4 +1,10 @@
 # Job Journey
+#### <b>LAUNCH YOUR CAREER QUEST WITH CLARITY</b>
+#### Plan, Track, Achieve!
+#### Your career journey, mapped and mastered. With our intuitive tracking, turn every application into a stepping stone towards success.
+
+![Screenshot](/public/screenshot.png)
+
 #### Check out this application here
 http://job-journey.us-east-2.elasticbeanstalk.com/
 ## Team Members
