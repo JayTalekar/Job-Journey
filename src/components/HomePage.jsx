@@ -10,7 +10,7 @@ import {
 
 export function HomePage(){
     return (
-        <Box display={'flex'} justifyContent={'center'} alignContent={'center'}>
+        <Box display={'flex'} justifyContent={'center'} alignContent={'center'}> 
             <Typography variant="h4">Home Page</Typography>
         </Box>
     )
