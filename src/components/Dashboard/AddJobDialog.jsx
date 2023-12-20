@@ -15,8 +15,15 @@ import {
     Typography,
     MenuItem,
     Snackbar,
-    Alert
+    Alert,
+    Grid,
+    InputAdornment
 } from "@mui/material";
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import PlaceIcon from '@mui/icons-material/Place';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import BusinessIcon from '@mui/icons-material/Business';
+import AddLinkIcon from '@mui/icons-material/AddLink';
 import {v4 as uuid} from "uuid"
 import { addJob as writeJob } from "../../firebase/FirestoreFunctions";
 import { AuthContext } from "../../context/AuthContext";
@@ -91,30 +98,40 @@ const AddJobDialog = ({onCloseCallback, forCategory}) => {
         <Dialog  key={"add_job_dialog"} maxWidth="md" fullWidth={true} open={open}>
             <DialogTitle>Create a New Job</DialogTitle>
             <DialogContent>
-                <Container fixed disableGutters sx={{display:'flex', flexDirection: 'column'}}>
-                    <Box sx={{width: '100%', display:'flex', justifyContent: 'space-around'}}>
-                        <Box>
-                            <Typography fontWeight='bold' variant="subtitle1">Company Name*</Typography>
+                <Grid container spacing={2} marginTop={'5px'}>
+                        <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'center'}>
                             <TextField
-                                InputLabelProps={{shrink: false}}
+                                InputProps={{
+                                    startAdornment: (
+                                    <InputAdornment position="start">
+                                        <BusinessIcon />
+                                    </InputAdornment>
+                                    ),
+                                }}
                                 size="sm"
                                 placeholder="Company Name"
+                                label="Company Name"
                                 value={company}
                                 onChange={(e) => setCompany(e.target.value)}/>
-                        </Box>
+                        </Grid>
                         
-                        <Box>
-                            <Typography fontWeight='bold' variant="subtitle1">Position*</Typography>
+                        <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'center'}>
                             <TextField
-                                InputLabelProps={{shrink: false}}
+                                InputProps={{
+                                    startAdornment: (
+                                    <InputAdornment position="start">
+                                        <BusinessCenterIcon />
+                                    </InputAdornment>
+                                    ),
+                                }}
                                 size="sm"
                                 placeholder="Position"
+                                label="Position"
                                 value={position}
                                 onChange={(e) => setPosition(e.target.value)}/>
-                        </Box>
+                        </Grid>
                         
-                        <Box>
-                            <Typography fontWeight='bold' variant="subtitle1">Category*</Typography>
+                        <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'center'}>
                             <Select
                                 sx={{minWidth: '195px'}}
                                 value={category}
@@ -123,22 +140,25 @@ const AddJobDialog = ({onCloseCallback, forCategory}) => {
                                         return <MenuItem value={category}>{category}</MenuItem>
                                     })}
                             </Select>
-                        </Box>
-                    </Box>
+                        </Grid>
 
-                    <Box sx={{width: '100%', display:'flex', justifyContent: 'space-around'}}>
-                        <Box>
-                            <Typography fontWeight='bold' variant="subtitle1">Salary</Typography>
+                        <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'center'}>
                             <TextField
-                                InputLabelProps={{shrink: false}}
+                                InputProps={{
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        <AttachMoneyIcon />
+                                      </InputAdornment>
+                                    ),
+                                  }}
                                 size="sm"
                                 placeholder="Salary"
+                                label="Salary"
                                 value={salary}
                                 onChange={(e) => setSalary(e.target.value.trim())}/>
-                        </Box>
+                        </Grid>
                         
-                        <Box>
-                            <Typography fontWeight='bold' variant="subtitle1">Job Type</Typography>
+                        <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'center'}>
                             <Select
                                 sx={{minWidth: '195px'}}
                                 value={jobType}
@@ -147,34 +167,42 @@ const AddJobDialog = ({onCloseCallback, forCategory}) => {
                                         return <MenuItem value={type}>{type}</MenuItem>
                                     })}
                             </Select>
-                        </Box>
+                        </Grid>
                         
-                        <Box>
-                            <Typography fontWeight='bold' variant="subtitle1">Location</Typography>
+                        <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'center'}>
                             <TextField
-                                InputLabelProps={{shrink: false}}
+                                InputProps={{
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        <PlaceIcon />
+                                      </InputAdornment>
+                                    ),
+                                  }}
                                 size="sm"
                                 placeholder="Location"
+                                label="Location"
                                 value={location}
                                 onChange={(e) => setLocation(e.target.value)}/>
-                        </Box>
-                    </Box>
+                        </Grid>
 
-                    <Box sx={{width: '100%', display:'flex', justifyContent: 'space-around'}}>
-                        <Box sx={{width: '100%', paddingX: '48px'}}>
-                            <Typography fontWeight='bold' variant="subtitle1">URL</Typography>
+                        <Grid item xs={12}>
                             <TextField
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                        <AddLinkIcon />
+                                        </InputAdornment>
+                                    ),
+                                    }}
                                 fullWidth
                                 size="lg"
-                                InputLabelProps={{shrink: false}}
+                                label="URL"
                                 placeholder="URL"
                                 value={url}
                                 onChange={(e) => setURL(e.target.value.trim())}/>
-                        </Box>
-                    </Box>
+                        </Grid>
 
-                    <Box sx={{width: '100%', display:'flex', justifyContent: 'space-around'}}>
-                        <Box sx={{width: '100%', paddingX: '48px'}}>
+                        <Grid item xs={12}>
                             <Typography fontWeight='bold' variant="subtitle1">Description</Typography>
                             <TextField
                                 fullWidth
@@ -184,9 +212,8 @@ const AddJobDialog = ({onCloseCallback, forCategory}) => {
                                 placeholder="Description"
                                 value={desc}
                                 onChange={(e) => setDesc(e.target.value)}/>
-                        </Box>
-                    </Box>
-                </Container>
+                        </Grid>
+                </Grid>
 
             </DialogContent>
             <DialogActions>

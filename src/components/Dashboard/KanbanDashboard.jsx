@@ -223,10 +223,10 @@ export const KanbanDashboard = () => {
                                 padding: "5px",
                             }
                         }}
-                        sx={{marginRight: "10px"}}
+                        // sx={{marginRight: "10px"}}
                         onChange={e => onFilterCompany(e.target.value)}/>
 
-                    <Button variant="outlined" size="small">Sort By Created Date</Button>
+                    {/* <Button variant="outlined" size="small">Sort By Created Date</Button> */}
                 </Box>
 
                 {openDialog && <AddJobDialog onCloseCallback={onDialogClosed} />}

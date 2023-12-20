@@ -69,4 +69,19 @@ const setDocs = (allMetadata) => ({
     type: actions.set_documents,
     payload: {allMetadata: allMetadata}
 })
-export {addJob, editJob, deleteJob, setBoardName, persistJobs, persistCategories, addContact, editContact, deleteContact, setContacts, addDoc, editDoc, deleteDoc, setDocs}
+export {
+  addJob,
+  editJob,
+  deleteJob,
+  setBoardName,
+  persistJobs,
+  persistCategories,
+  addContact,
+  editContact,
+  deleteContact,
+  setContacts,
+  addDoc,
+  editDoc,
+  deleteDoc,
+  setDocs,
+};
