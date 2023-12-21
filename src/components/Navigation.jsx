@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { doSignOut } from "../firebase/FirebaseFunctions";
@@ -52,6 +52,8 @@ export function Navigation() {
 
 const NavigateAuth = ({user}) => {
 
+    const dispatch = useDispatch()
+
     async function setupUser(){
         if(user){
             if(user.metadata.createdAt === user.metadata.lastLoginAt){
@@ -89,6 +91,9 @@ const NavigateAuth = ({user}) => {
 
     function onClickLogout(){
         setAnchorEl(null)
+        dispatch({
+            type: "RESET_STATE"
+        })
         persistor.purge()
         doSignOut()
     }
