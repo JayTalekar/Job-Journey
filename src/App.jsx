@@ -37,8 +37,8 @@ import { Navigation } from './components/Navigation';
 import {PrivateRoute} from './components/PrivateRoute'
 import SignUpPage from './components/SignUpPage';
 import SignInPage from './components/SignInPage';
-import ForgotPassword from './components/ForgotPassword';
 import { PublicRoute } from './components/PublicRoute';
+import {ErrorPage} from './components/ErrorPage'
 function App() {
 
   return(
@@ -63,10 +63,6 @@ function App() {
               <Route path='/signup' element={<SignUpPage />} />
             </Route>
 
-            <Route path='/forgot_password' element={<PublicRoute/>}>
-              <Route path='/forgot_password' element={<ForgotPassword />} />
-            </Route>
-
             {/*Protected Routes*/}
             <Route path="/dashboard" element={<PrivateRoute />}>
               <Route path={"/dashboard"} element={<DashboardPage/>} />
@@ -87,6 +83,10 @@ function App() {
             <Route path="/settings" element={<PrivateRoute />}>
               <Route path={"/settings"} element={<SettingsPage/>} />
             </Route>
+
+            
+              <Route path="*" element={<ErrorPage/>} />
+          
           </Routes>
         </Container>
       </Box>
