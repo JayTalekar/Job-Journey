@@ -56,14 +56,16 @@ const NavigateAuth = ({user}) => {
 
     async function setupUser(){
         if(user){
-            if(user.metadata.createdAt === user.metadata.lastLoginAt){
-                const dashboardResult = await setupDashboard(user.uid)
+            const currentTime = new Date().getTime()
+            if(currentTime - user.metadata.createdAt < 10000){
+                console.log("SETTING UP DATABASE")
+                console.log(user.metadata.createdAt - currentTime)
+                await setupDashboard(user.uid)
 
                 if(!user.displayName)
                     user.displayName = getAuth().currentUser.displayName
                     
-                const userResult = await setUserDetails(user.uid, user.displayName, user.email)
-                if(dashboardResult && userResult) user.metadata.lastLoginAt = new Date().getTime()
+                await setUserDetails(user.uid, user.displayName, user.email)
             }
         }
     }

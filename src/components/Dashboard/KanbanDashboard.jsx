@@ -19,7 +19,6 @@ import AddIcon from '@mui/icons-material/Add';
 //Component imports
 import CategoryContainer from "./CategoryContainer";
 import AddJobDialog from "./AddJobDialog";
-import { getJobData } from "./randomJob";
 import { createPortal } from "react-dom";
 import JobCard from "./JobCard";
 

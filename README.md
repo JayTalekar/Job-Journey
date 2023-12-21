@@ -101,3 +101,10 @@ To run this project, you need to have Docker installed on your machine. If you d
     ```
 
 Now you can access the Job Journey application in your browser at http://localhost:3000.
+
+## Seeding the Firestore Database
+1. Run the seed file:
+    ```bash
+    npm run seed
+    ``` 
+2. The seed job will create a dummy account and print the results in the console. Use this credentials to login and view the generated data.
