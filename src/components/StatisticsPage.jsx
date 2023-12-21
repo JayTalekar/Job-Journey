@@ -6,11 +6,14 @@ import { AuthContext } from "../context/AuthContext";
 import { Grid, Card, CardContent, Typography, useTheme, List, ListItem, ListItemAvatar, Avatar, ListItemText, Chip } from '@mui/material';
 import { Pie, Bar} from 'react-chartjs-2';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import { differenceInCalendarDays } from 'date-fns';
-
+import { useSelector } from 'react-redux';
+import { getRelativeTime } from '../helpers';
 import 'chart.js/auto';
 
 export const StatisticsPage = () => {
+
+  const jobs = useSelector(state => state.jobs);
+
   const [totalJobs, setTotalJobs] = useState(0);
   const [jobsApplied, setJobsApplied] = useState(0);
   const [jobsInterviewing, setJobsInterviewing] = useState(0);
@@ -20,71 +23,87 @@ export const StatisticsPage = () => {
   const [latestJobs, setLatestJobs] = useState([]);
   const { currentUser } = useContext(AuthContext);
 
+
   const theme = useTheme();
   useEffect(() => {
-    const fetchData = async () => {
-      const userid = currentUser.uid;
-      
-      const docRef = doc(db, 'dashboards', userid);
-
-      getDoc(docRef).then((docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          const jobs = data.jobs || [];
-          
-          setTotalJobs(jobs.filter(job => job.category === 'Wishlist').length);
-          setJobsApplied(jobs.filter(job => job.category === 'Applied').length);
-          setJobsInterviewing(jobs.filter(job => job.category === 'Interviewing').length);
-          setJobsOffered(jobs.filter(job => job.category === 'Offer').length);
-          setJobsRejected(jobs.filter(job => job.category === 'Rejected').length);
-          setJobsGhosted(jobs.filter(job => job.category === 'Ghosted').length);
-        } else {
-          console.log("No such document!");
-        }
-      }).catch((error) => {
-        console.log("Error getting document:", error);
-      });
 
 
-    };
-    const calculateDaysAgo = (timestamp) => {
-      const date = new Date(timestamp);
-      const now = new Date();
-      return differenceInCalendarDays(now, date);
-    };
+    if(jobs.length == 0){
+      const fetchData = async () => {
+        const userid = currentUser.uid;
+        
+        const docRef = doc(db, 'dashboards', userid);
+  
+        getDoc(docRef).then((docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const jobs = data.jobs || [];
+            
+            setTotalJobs(jobs.filter(job => job.category === 'Wishlist').length);
+            setJobsApplied(jobs.filter(job => job.category === 'Applied').length);
+            setJobsInterviewing(jobs.filter(job => job.category === 'Interviewing').length);
+            setJobsOffered(jobs.filter(job => job.category === 'Offer').length);
+            setJobsRejected(jobs.filter(job => job.category === 'Rejected').length);
+            setJobsGhosted(jobs.filter(job => job.category === 'Ghosted').length);
+          } else {
+            console.log("No such document!");
+          }
+        }).catch((error) => {
+          console.log("Error getting document:", error);
+        });
+  
+  
+      };
 
-    const fetchLatestJobs = async () => {
-      const userid = currentUser.uid;
-      const docRef = doc(db, 'dashboards', userid);
+      const fetchLatestJobs = async () => {
+        const userid = currentUser.uid;
+        const docRef = doc(db, 'dashboards', userid);
+  
+        getDoc(docRef).then((docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const jobs = data.jobs || [];
+  
+            const jobsWithDaysAgo = jobs.map(job => ({
+              ...job,
+              daysAgo: getRelativeTime(job.created_on),
+            }));
+  
+            const sortedJobs = jobsWithDaysAgo.sort((a, b) => b.created_on - a.created_on).slice(0, 10);
+  
+            setLatestJobs(sortedJobs);
+          } else {
+            console.log("No such document!");
+          }
+        }).catch((error) => {
+          console.log("Error getting document:", error);
+        });
+      };
 
-      getDoc(docRef).then((docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          const jobs = data.jobs || [];
+      fetchData();
+      fetchLatestJobs();
+    }else{
+      setTotalJobs(jobs.filter(job => job.category === 'Wishlist').length);
+      setJobsApplied(jobs.filter(job => job.category === 'Applied').length);
+      setJobsInterviewing(jobs.filter(job => job.category === 'Interviewing').length);
+      setJobsOffered(jobs.filter(job => job.category === 'Offer').length);
+      setJobsRejected(jobs.filter(job => job.category === 'Rejected').length);
+      setJobsGhosted(jobs.filter(job => job.category === 'Ghosted').length);
 
-          // Map jobs to include days ago calculation
-          const jobsWithDaysAgo = jobs.map(job => ({
-            ...job,
-            daysAgo: calculateDaysAgo(job.created_on),
-          }));
+      const jobsWithDaysAgo = jobs.map(job => ({
+        ...job,
+        daysAgo: getRelativeTime(job.created_on),
+      }));
 
-          // Sort jobs by created_on in descending order and slice the first 10
-          const sortedJobs = jobsWithDaysAgo.sort((a, b) => b.created_on - a.created_on).slice(0, 10);
+      const sortedJobs = jobsWithDaysAgo.sort((a, b) => b.created_on - a.created_on).slice(0, 10);
 
-          setLatestJobs(sortedJobs);
-        } else {
-          console.log("No such document!");
-        }
-      }).catch((error) => {
-        console.log("Error getting document:", error);
-      });
-    };
+      setLatestJobs(sortedJobs);
+    }
 
-    // fetchLatestJobs();
-    
-    fetchData();
-    fetchLatestJobs();
-  }, [currentUser]);
+
+
+
+  }, [jobs]);
 
   const cardColors = {
     total: theme.palette.primary.main,
@@ -218,7 +237,7 @@ export const StatisticsPage = () => {
 
  
       <Grid item container xs={12} spacing={2}>
-              {/* Pie Chart */}
+            
               <Grid item xs={12} md={6}>
                 <Card>
                   <CardContent>
@@ -232,7 +251,7 @@ export const StatisticsPage = () => {
                 </Card>
               </Grid>
 
-        {/* Bar Chart */}
+    
         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
@@ -264,7 +283,7 @@ export const StatisticsPage = () => {
                   </ListItemAvatar>
                   <ListItemText
                     primary={`${job.company} - ${job.position}`}
-                    secondary={`${job.jobType} - ${job.daysAgo} days ago`}
+                    secondary={`${job.jobType} - ${job.daysAgo}`}
                   />
                   <Chip label={job.category} color="primary" />
                 </ListItem>
