@@ -1,5 +1,5 @@
 import {v4 as uuid} from 'uuid';
-import { categories, job_type } from '../../constants';
+import { categories, job_type } from '../src/constants.js';
 
 const companies = [
     "Apple",
