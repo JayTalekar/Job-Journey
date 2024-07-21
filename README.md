@@ -11,13 +11,6 @@ http://job-journey.us-east-2.elasticbeanstalk.com/
 #### Find the source code here
 https://github.com/JayTalekar/job-journey
 
-## Team Members
-
-* Jay Talekar : 20015818
-* Krutarth Maheshbhai Bhavani : 20011129
-* Jiaxuan Shi : 20016097
-* Yousef Khalil : 10462509
-
 ## Setup
 
 ### Installation of Docker
